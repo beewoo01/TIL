@@ -25,7 +25,7 @@ try, catch를 사용하면 된다.
 그렇다고 모든 코드를 try에 묶어줄 필요는 없다.
 예외처리가 필요한 부분에만 작성해주면 된다.
 
-</br></br></br>
+</br></br>
 
 ```java
 int[] intArray = new int[5];
@@ -120,6 +120,81 @@ if, else if와 동일하게 순차적으로 수행된다.
 모바일 부분에서 자주 발생하는 것은 `OutOfMemoryError`이다.
 exception과 구분하는 방법은 이름으로 구분이 가능하다.
 오류의 이름이 Error로 끝나면 에러이고, Exception으로 끝나면 예외다.
+Error는 프로세스에 영향을 주고, Exception은 쓰레드에만 영향을 준다.
+</br>
 
+### runtime exception
+런타임 예외는 예외가 발생할 것을 미리 감지하지 못했을 때 발생한다.
+대표적인것은 `NullPointerException`, `IndexOutOfBoundsException` 이 있다.
+이 이 예외를 묶어주지 않는다고 해서 컴파일할 때 예외가 발생하지 않는다.
+하지만 실행 시 발생할 가능성ㅇ이 있다. 그래서 런타임 예외라고 한다. 
+그리고, 컴파일시에 체크를 하지 않기 때문에 unchecked exception이라고도 부른다.
+</br></br>
 
+## 모든 예외의 할아버지는 java.lang.Throwable 클래스다
+Exception과 Error의 공통 부모 클래스는 Throwable클래스다 Throwable의 부모는 Object 클래스다.
+Throwable에서 Object를 상속받기 때문에 Exception과 Error의 공통 부모 클래스는 Object가 되기도 한다.
+
+Throwable에서 가장 많이 사용되는 method를 살펴보자.
+- getMessage()
+- toString()
+- printStackTrace()
+
+### getMessage()
+예외 메시지를 String 형태로 제공 받는다. 예외가 출력되었을 때 어떤 예외가 발생되었는지를 확인할 때 매우 유용하다.
+그 메시지를 활용해서 사용자에게 보여줄 때 좋다.
+</br>
+
+### toString()
+예외 메시지를 String형태로 제공 받는다.
+getMessage()보다 더 상세하게 예외 클래스 이름도 같이 제공한다.
+</br>
+
+### pringStackTrace()
+가장 가장 첫 줄에는 **예외 메시지**를 출력, 
+두 번째 줄부터 **예외가 발생하게 된 메소드들의 호출 관계** (**스택 트레이스**)를 출력
+</br></br>
+
+## 난 예외를 던질 거니까 throws라고 써 놓을께
+자바에서는 예외를 의도적으로 던질 수 있다.
+```java
+public class ThrowSample {
+  public tatic void main(String args[]){
+    ThrowSample sample = new ThrowSample();
+    sample.throwException(13);
+  }
+
+  public void throwException(int number) {
+    try {
+      if(number>12) {
+        throw new Exception("Number is over than 12");
+      }
+      System.out.println("Number is " + number);
+      
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+    
+  }
+}
+```
+
+1년 열두 달을 처리하는 로직을 구현할 때, 13이 들어왔을 경우를 코드로 구현한 것이다.
+13월이라는 것은 정의가 불가능 하니 필요에 의해 예외를 발생시킨 코드이다.
+이런 상황에서 try 블록 내에서 throw라고 명시한 후 개발자가 예외 클래스의 객체를 생성하면 된다.
+
+<br/>
+```java
+public void throwsException(int number) throws Exception {
+  if(number > 12) {
+    throw new Exception("Number is over than 12");
+  }
+  System.out.println("Number is " + number);
+}
+```
+이렇게 메소드에 선언에 해놓으면, 예외가 발생했 을 때 try-catch로 묶어주지 않아도 
+그 메소드 를 호출한 메소드로 예외 처리를 위임하는 것이디 때문에 전혀 문제가 되지 않는다.
+이렇게 throws로 메소드를 선언하면 개발이 어려워 진다.
+왜냐하면 이 throwsException()이라는 메소드는 Exception을 던진다고 메소드 선언부에 throws 선언을 해놓았기 때문에,
+throwsException() 메소드를 호출한 메소드에서는 반드시 try-catch 블록으로 throwsException()메소드를 감싸주어야만 한다.
 
