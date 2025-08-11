@@ -71,3 +71,11 @@ override fun onStop() {
 이것들을 간단하게 해결하는데 구글이 추천하는 것은 kotlin coroutine이다.
 </br>
 
+코루틴을 사용히 suspend를 사용해서 Dream Code와 상당히 유사하게 작성할 수 있게 된다.
+```kotlin
+suspend fun loadUser() {
+  val user = api.fetchUser()
+  show(user)
+}
+```
+이렇게 되면 위에서 봤던 Dream Code와 비교를 해보면 suspend fun으로 사용하는것 말고는 동일하다.
