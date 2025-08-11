@@ -1,5 +1,3 @@
-# Example 1
-
 ```kotlin
 fun main() {
   GlobalScope.launch {
@@ -162,4 +160,74 @@ fun main() = runBlocking {
 ```
 `runBlocking`이 두 `launch`가 끝날 때까지 자동으로 기다려준다.
 </br>예외, 취소 모두 부모-자식 관계에서 안전하게 전파된다.
+</br></br></br>
+
+
+
+---
+
+## Coroutines ARE light-weight
+### 코루틴은 Thread 보다 가볍다.
+```kotlin
+fun main() = runBlocking { 
+    repeat(100_000) {
+        launch { 
+            delay(1000L)
+            print(".")
+        }
+    }
+}
+```
+
+```kotlin
+fun main() = runBlocking {
+    repeat(100_000) {
+        thread {
+            Thread.sleep(1000L)
+            print(".")
+        }
+    }
+}
+```
+- it launches 100k coroutines
+- try that with threads.
+- out-of-memory error
+
+쓰레드로 했을때와 코루틴으로 했을때의 차이점은 속도차이가 분명하게 나면서 내 컴퓨터에서는
+`thread`로 실행 했을때 에러가 나왔다.
+</br>unable to create native thread: possibly out of memory or process/resource limits reached
+</br>새 thread를 더 못 만든다는 에러다.
 </br>
+
+
+## 일시정지
+
+```kotlin
+fun main() = runBlocking {
+    launch {
+        repeat(5) { i ->
+            println("Coroutune A, $i")
+            delay(10L)
+        }
+    }
+
+    launch {
+        repeat(5) { i ->
+            println("Coroutune B, $i")
+        }
+    }
+
+    println("Coroutine Outer")
+}
+
+fun <T>println(msg: T) {
+    kotlin.io.println("$msg [${Thread.currentThread().name}]")
+}
+```
+완성된 코드다.</br>
+출력되는 로그가 어디 Thread에서 출력이 되는건지 확인하기 위해 println을 확장했다.</br>
+`delay`는 숫자만큼 기다렸다가 실행 되는데
+순차석으로 "Coroutine Outer" -> "Coroutune A, 0" -> "Coroutune B, 0" -> B... -> A...</br>
+이렇게 출력되는것을 확인 할 수 있다.
+`delay(10L)`코드 없이 실행하면
+`Coroutine Outer`먼저 실행이 되고, "Coroutune A" 가 전부 출력 된 후, "Coroutune B"가 출력되는것을 볼 수 있다.
