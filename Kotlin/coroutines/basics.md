@@ -231,3 +231,6 @@ fun <T>println(msg: T) {
 이렇게 출력되는것을 확인 할 수 있다.
 `delay(10L)`코드 없이 실행하면
 `Coroutine Outer`먼저 실행이 되고, "Coroutune A" 가 전부 출력 된 후, "Coroutune B"가 출력되는것을 볼 수 있다.
+
+---
+
