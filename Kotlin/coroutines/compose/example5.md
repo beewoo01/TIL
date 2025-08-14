@@ -40,6 +40,9 @@ Process finished with exit code 0
 아래와 같이 예제를 변경해서 안전하다는것을 확인해 보자.
 Exception이 발생하면 coroutine이 멈춘다.
 
+결론은
+GlobalScope에서 launch한 형태로 함수를 감싸서 만들지 말고,
+이런 형태로 structured concurrency하게 suspending function을 조합하고 구성하는게 맞다라는 메시지를 준다.
 
 ```kotlin
 fun main() = runBlocking<Unit> {
