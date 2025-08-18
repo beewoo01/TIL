@@ -1,8 +1,7 @@
 # Coroutine Passing Style
 
-## 어떻게 함수가 중단되고 재개가 되는걸까?
-## 자바는 안되느 코틀린은 왜 되는걸까?
-## 코틀린은 어떻게 JVM에서 동작하는 걸까?
+Q. 어떻게 함수가 중단되고 재개가 되는걸까?
+Q. 코틀린은 어떻게 JVM에서 동작하는 걸까?
 
 `Coroutine`으로 코드를 작성하면 컴파일러는 `Coroutine Passing Style (CPS)`로 변환하게 된다.
 
