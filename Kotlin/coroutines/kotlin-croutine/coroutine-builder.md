@@ -159,5 +159,71 @@ fun main() = runBlocking {
 }
 ```
 
-async빌더는 호출 되자마자 바로 시작된다.</br>
+async 빌더는 호출 되자마자 바로 시작된다.</br>
 즉 몇 개의 작업을 한번에 시작하고 모든 결과를 한꺼번에 기다릴 때 사용한다.</br>
+async 빌더가 동작하는 방식은 launch와 비슷하다. 값을 반환한다는 추가적인 특징이 있다.</br>
+launch 함수를 astnc로 대체해도 코드는 동일한 방식으로 작동한다.</br>
+하지만 저자가 이렇게 하지면 절대 안된다면서 예시코드를 보여준다. </br>
+async는 값을 생설할 때 사용하고, 값이 필요하지 않을 때는 launch를 사용해야 한다고 한다.</br>
+
+```kotlin
+fun main() = runBlocking {
+  //이렇게 작성하지 마세요!
+  //async를 launch로 잘못 사용한 경우입니다.
+  GlobalScope.async {
+    delay(1000L)
+    println("World")
+  }
+  println("Hello,")
+  delay(2000L)
+}
+```
+</br>
+
+asnyc 빌더은 두 가지 다른 곳에서 데이터를 얻어와 합치는 경우처럼, 두 작업을 병렬로 실행할 때 주로 사용된다.
+```kotlin
+scope.launch {
+  val news = async {
+      newsRepo.getNews().sortedByDescending { it.date }
+  }
+
+  val newsSummary = newsRepo.getNewsSummary()
+  view.showNews(newsSummary, news.await())
+}
+```
+</br>
+
+위 코드를 분석해보자. `newsRepo.getNews()`가 먼저 실행되면서 작업이 끝나기 전에 `newsRepo.getNewsSummary()`가 실행된다.</br>
+`newsRepo.getNewsSummary()`는 main 코루틴에서 실행된다.</br>
+`view.showNews(newsSummary, news.await())`여기서는 작업이 끝날 때 까지 기다린다.</br>
+
+---
+## 구조화된 동시성
+
+```kotlin
+fun main() = runBlocking {
+  GlobalScope.launch {
+    delay(1000L)
+    println("World!")
+  }
+
+  GlobalScope.launch {
+    delay(2000L)
+    println("World!")
+  }
+  println("Hello,")
+  //delay(3000L)
+}
+//Hello,
+```
+코루틴이 `GlobalScope`에서 시작되었다면 프로그램은 해당 코루틴을 기다리지 않는다.</br>
+코루틴은 어떤 스레드도 블록하지 않는다. 그래서 프로그램이 끝나는 걸 막을 방법이 없다.</br></br>
+부모는 자식들을 위한 스코프를 제공하고 자식들을 해당 스코프 내에서 호출 한다. 이를 통해 **구조화된 동시성**이라는 관계가 성립한다.</br>
+</br>
+부모-자식 관계의 가장 중요한 특징
+- 자식은 부모로부터 context를 상속받는다.
+- 부모는 모든 자식이작업을 마칠 때 까지 기다린다.
+- 부모 코루틴이 취소되면 자식 코루틴도 취소된다.
+- 자식 코루틴에서 에러가 발생하면,보모 코루틴 또한 에러로 소명한다.
+
+
