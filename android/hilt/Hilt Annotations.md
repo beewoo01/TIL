@@ -2,12 +2,14 @@
 
 ### 1. Application - level Annotation
  `HiltAndroidApp`
-  - Purpose: Initializes Hilt in your Android application(App에서 Hilt를 초기화 한다)
-  - Usage: Must be added to the Application class.(Application class를 추가해야 한다.)
+  - Purpose: Initializes Hilt in your Android application<br/>
+  App에서 Hilt를 초기화 한다
+  - Usage: Must be added to the Application class.<br/>
+  Application class를 추가해야 한다.
   
 ### 2. Android Components Annotations
  - These annotations allow Hilt to inject dependencies **into Android** components.<br/>
- (이 Annotation들은 Hilt가 Android 구성 요소에 의존성을 주입할 수 있게 해준다.)
+ 이 Annotation들은 Hilt가 Android 구성 요소에 의존성을 주입할 수 있게 해준다.
 <br/><br/>
 
 @AndroidEntyPoint
